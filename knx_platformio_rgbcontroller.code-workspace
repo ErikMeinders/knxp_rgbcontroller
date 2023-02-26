@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../ftm32_pio"
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="KNX MT" ToolVersion="5.6.407.26745" xmlns="http://knx.org/xml/project/11">
+  <ManufacturerData>
+    <Manufacturer RefId="M-00FA">
+      <Catalog>
+        <CatalogSection Id="M-00FA_CS-1" Name="Device" Number="3" DefaultLanguage="en-US">
+          <CatalogItem Id="M-00FA_H-1009-1_HP-RGBX-78-0000_CI-IA4309-1" Name="easytorgb" Number="1" ProductRefId="M-00FA_H-1009-1_P-IA4309" Hardware2ProgramRefId="M-00FA_H-1009-1_HP-RGBX-78-0000" DefaultLanguage="en-US" />
+        </CatalogSection>
+      </Catalog>
+      <ApplicationPrograms>
+        <ApplicationProgram Id="M-00FA_A-RGBX-78-0000" ApplicationNumber="43981" ApplicationVersion="10" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
+          <Static>
+            <Code>
+              <RelativeSegment Id="M-00FA_A-RGBX-78-0000_RS-04-00000" Name="Parameters" Offset="0" Size="100" LoadStateMachine="4" />
+            </Code>
+            <ParameterTypes>
+              
+              <ParameterType Id="M-00FA_A-RGBX-78-0002_PT-UpdateFreqRange" Name="UpdateFreqRange">
+                <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="255" />
+              </ParameterType>
+              <ParameterType Id="M-00FA_A-RGBX-78-0002_PT-Text12Byte" Name="Text12Byte">
+                <TypeText SizeInBit="96" />
+              </ParameterType>
+            </ParameterTypes>
+            <Parameters>
+              
+              <Parameter Id="M-00FA_A-RGBX-78-0000_P-1" Name="UpdateFreq" ParameterType="M-00FA_A-RGBX-78-0002_PT-UpdateFreqRange" Text="Cyclic KNX update Frequency" Value="5">
+                <Memory CodeSegment="M-00FA_A-RGBX-78-0000_RS-04-00000" Offset="0" BitOffset="0" />
+              </Parameter>
+      
+            </Parameters>
+            <ParameterRefs>
+              <ParameterRef Id="M-00FA_A-RGBX-78-0000_P-1_R-1" RefId="M-00FA_A-RGBX-78-0000_P-1" />
+              
+
+            </ParameterRefs>
+            <ComObjectTable>
+              <ComObject Id="M-00FA_A-RGBX-78-0000_O-1" Name="Room1" Text="Room 1" Number="1" FunctionText="Actual" ObjectSize="2 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-9-1" />
+                        
+            </ComObjectTable>
+            <ComObjectRefs>
+              <ComObjectRef Id="M-00FA_A-RGBX-78-0000_O-1_R-1" RefId="M-00FA_A-RGBX-78-0000_O-1" />
+              
+            </ComObjectRefs>
+            <AddressTable MaxEntries="64" />
+            <AssociationTable MaxEntries="64" />
+            <LoadProcedures>
+              <LoadProcedure MergeId="2">
+                <LdCtrlRelSegment LsmIdx="4" Mode="1" Fill="0" Size="100" AppliesTo="full" />
+                <LdCtrlRelSegment LsmIdx="4" Mode="0" Fill="0" Size="100" AppliesTo="par" />
+              </LoadProcedure>
+              <LoadProcedure MergeId="4">
+                <LdCtrlWriteRelMem ObjIdx="4" Offset="0" Verify="true" Size="100" AppliesTo="full,par" />
+              </LoadProcedure>
+            </LoadProcedures> 
+            <Options />
+          </Static>
+          <Dynamic>
+            <ChannelIndependentBlock>
+              <ParameterBlock Id="M-00FA_A-RGBX-78-0000_PB-1" Name="Docu" Text="Documentation">
+                <!-- In this example the first Tab shows some documentation -->
+                <ParameterSeparator Id="M-00FA_A-0000-00-0000_PS-1" Text="Short Intro:" />
+                <!-- A parameter seperator shows just some text -->
+                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-2" Text="This device is made for a specific purpose." />
+                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-3" Text="It controls Underground Floor Heating loops." />
+                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-4" Text="Different algoritms can be used to control the valves." />
+              </ParameterBlock>
+              <ParameterBlock Id="M-00FA_A-RGBX-78-0000_PB-2" Name="Actuals" Text="General Settings">
+                <ParameterRefRef RefId="M-00FA_A-RGBX-78-0000_P-1_R-1" />
+ 
+                <ComObjectRefRef RefId="M-00FA_A-RGBX-78-0000_O-1_R-1" />
+
+              </ParameterBlock>
+            </ChannelIndependentBlock>
+          </Dynamic>
+        </ApplicationProgram>
+      </ApplicationPrograms>
+      <Hardware>
+        <Hardware Id="M-00FA_H-1009-1" Name="ESP32" SerialNumber="1009" VersionNumber="1" HasIndividualAddress="true" HasApplicationProgram="true" IsIPEnabled="true">
+          <Products>
+            <Product Id="M-00FA_H-1009-1_P-IA4309" Text="easytorgb" OrderNumber="IA4309" IsRailMounted="false" DefaultLanguage="en-US" />
+          </Products>
+          <Hardware2Programs>
+            <Hardware2Program Id="M-00FA_H-1009-1_HP-RGBX-78-0000" MediumTypes="MT-5">
+              <ApplicationProgramRef RefId="M-00FA_A-RGBX-78-0000" />
+            </Hardware2Program>
+          </Hardware2Programs>
+        </Hardware>
+      </Hardware>
+    </Manufacturer>
+  </ManufacturerData>
+</KNX>
