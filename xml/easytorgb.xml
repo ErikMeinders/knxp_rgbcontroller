@@ -1,88 +1,254 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="KNX MT" ToolVersion="5.6.407.26745" xmlns="http://knx.org/xml/project/11">
+<?xml version="1.0" encoding="utf-8" ?>
+<KNX xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" CreatedBy="KNX MT" ToolVersion="5.1.255.16695" xmlns="http://knx.org/xml/project/11">
   <ManufacturerData>
     <Manufacturer RefId="M-00FA">
       <Catalog>
-        <CatalogSection Id="M-00FA_CS-1" Name="Device" Number="3" DefaultLanguage="en-US">
-          <CatalogItem Id="M-00FA_H-1009-1_HP-RGBX-78-0000_CI-IA4309-1" Name="easytorgb" Number="1" ProductRefId="M-00FA_H-1009-1_P-IA4309" Hardware2ProgramRefId="M-00FA_H-1009-1_HP-RGBX-78-0000" DefaultLanguage="en-US" />
+        <CatalogSection Id="M-00FA_CS-1" Name="Device" Number="1" DefaultLanguage="en-US">
+          <CatalogItem Id="M-00FA_H-0000-2_HP-0000-00-0000_CI-IA4312-1" Name="easytorgb" Number="1" ProductRefId="M-00FA_H-0000-2_P-IA4312" Hardware2ProgramRefId="M-00FA_H-0000-2_HP-0000-00-0000" DefaultLanguage="en-US" />
         </CatalogSection>
       </Catalog>
+
       <ApplicationPrograms>
-        <ApplicationProgram Id="M-00FA_A-RGBX-78-0000" ApplicationNumber="43981" ApplicationVersion="10" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
+
+        <ApplicationProgram Id="M-00FA_A-ABCD-99-0000" ApplicationNumber="43981" ApplicationVersion="16" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
           <Static>
             <Code>
-              <RelativeSegment Id="M-00FA_A-RGBX-78-0000_RS-04-00000" Name="Parameters" Offset="0" Size="100" LoadStateMachine="4" />
+              <RelativeSegment Id="M-00FA_A-ABCD-99-0000_RS-04-00000" Name="Parameters" Offset="0" Size="16" LoadStateMachine="4" />
             </Code>
+
             <ParameterTypes>
               
-              <ParameterType Id="M-00FA_A-RGBX-78-0002_PT-UpdateFreqRange" Name="UpdateFreqRange">
+              <ParameterType Id="M-00FA_A-ABCD-99-0002_PT-UpdateFreqRange" Name="UpdateFreqRange">
+                <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="240" />
+              </ParameterType>
+
+              <ParameterType Id="M-00FA_A-ABCD-99-0002_PT-RGBByte" Name="RGBByte">
                 <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="255" />
               </ParameterType>
-              <ParameterType Id="M-00FA_A-RGBX-78-0002_PT-Text12Byte" Name="Text12Byte">
-                <TypeText SizeInBit="96" />
-              </ParameterType>
+
             </ParameterTypes>
+            
             <Parameters>
               
-              <Parameter Id="M-00FA_A-RGBX-78-0000_P-1" Name="UpdateFreq" ParameterType="M-00FA_A-RGBX-78-0002_PT-UpdateFreqRange" Text="Cyclic KNX update Frequency" Value="5">
-                <Memory CodeSegment="M-00FA_A-RGBX-78-0000_RS-04-00000" Offset="0" BitOffset="0" />
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-1" Name="UpdateFreq" ParameterType="M-00FA_A-ABCD-99-0002_PT-UpdateFreqRange" Text="Cyclic KNX update Frequency" Value="5">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="0" BitOffset="0" />
               </Parameter>
-      
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-2" Name="Channel1R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Red" Value="250">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="1" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-3" Name="Channel1G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Green" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="2" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-4" Name="Channel1B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Blue" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="3" BitOffset="0" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-5" Name="Channel2R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Red" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="4" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-6" Name="Channel2G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Green" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="5" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-7" Name="Channel2B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Blue" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="6" BitOffset="0" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-8" Name="Channel3R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Red" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="7" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-9" Name="Channel3G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Green" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="8" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-10" Name="Channel3B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Blue" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="9" BitOffset="0" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-11" Name="Channel4R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Red" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="10" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-12" Name="Channel4G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Green" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="11" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-13" Name="Channel4B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Blue" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="12" BitOffset="0" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-14" Name="Channel5R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Red" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="13" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-15" Name="Channel5G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Green" Value="0">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="14" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-16" Name="Channel5B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Blue" Value="250">
+                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="15" BitOffset="0" />
+              </Parameter>
+
+
             </Parameters>
+
             <ParameterRefs>
-              <ParameterRef Id="M-00FA_A-RGBX-78-0000_P-1_R-1" RefId="M-00FA_A-RGBX-78-0000_P-1" />
-              
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-1_R-1" RefId="M-00FA_A-ABCD-99-0000_P-1" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-2_R-2" RefId="M-00FA_A-ABCD-99-0000_P-2" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-3_R-3" RefId="M-00FA_A-ABCD-99-0000_P-3" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-4_R-4" RefId="M-00FA_A-ABCD-99-0000_P-4" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-5_R-5" RefId="M-00FA_A-ABCD-99-0000_P-5" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-6_R-6" RefId="M-00FA_A-ABCD-99-0000_P-6" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-7_R-7" RefId="M-00FA_A-ABCD-99-0000_P-7" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-8_R-8" RefId="M-00FA_A-ABCD-99-0000_P-8" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-9_R-9" RefId="M-00FA_A-ABCD-99-0000_P-9" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-10_R-10" RefId="M-00FA_A-ABCD-99-0000_P-10" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-11_R-11" RefId="M-00FA_A-ABCD-99-0000_P-11" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-12_R-12" RefId="M-00FA_A-ABCD-99-0000_P-12" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-13_R-13" RefId="M-00FA_A-ABCD-99-0000_P-13" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-14_R-14" RefId="M-00FA_A-ABCD-99-0000_P-14" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-15_R-15" RefId="M-00FA_A-ABCD-99-0000_P-15" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-16_R-16" RefId="M-00FA_A-ABCD-99-0000_P-16" />
 
             </ParameterRefs>
+
             <ComObjectTable>
-              <ComObject Id="M-00FA_A-RGBX-78-0000_O-1" Name="Room1" Text="Room 1" Number="1" FunctionText="Actual" ObjectSize="2 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-9-1" />
-                        
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-1" Name="Channel1" Text="Channel 1" Number="1" FunctionText="Switch" ObjectSize="1 Byte" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-2" Name="Channel2" Text="Channel 2" Number="2" FunctionText="Switch" ObjectSize="1 Byte" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-3" Name="Channel3" Text="Channel 3" Number="3" FunctionText="Switch" ObjectSize="1 Byte" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-4" Name="Channel4" Text="Channel 4" Number="4" FunctionText="Switch" ObjectSize="1 Byte" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-5" Name="Channel5" Text="Channel 5" Number="5" FunctionText="Switch" ObjectSize="1 Byte" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-1-1" />
+
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-6" Name="Channel1" Text="Channel 1" Number="6" FunctionText="Feedback" ObjectSize="1 Byte" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-7" Name="Channel2" Text="Channel 2" Number="7" FunctionText="Feedback" ObjectSize="1 Byte" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-8" Name="Channel3" Text="Channel 3" Number="8" FunctionText="Feedback" ObjectSize="1 Byte" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-9" Name="Channel4" Text="Channel 4" Number="9" FunctionText="Feedback" ObjectSize="1 Byte" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-10" Name="Channel5" Text="Channel 5" Number="10" FunctionText="Feedback" ObjectSize="1 Byte" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-1-1" />
+
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-11" Name="Channel1" Text="Channel 1" Number="11" FunctionText="Colour" ObjectSize="3 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-12" Name="Channel2" Text="Channel 2" Number="12" FunctionText="Colour" ObjectSize="3 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-13" Name="Channel3" Text="Channel 3" Number="13" FunctionText="Colour" ObjectSize="3 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-14" Name="Channel4" Text="Channel 4" Number="14" FunctionText="Colour" ObjectSize="3 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-15" Name="Channel5" Text="Channel 5" Number="15" FunctionText="Colour" ObjectSize="3 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-232-600" />
+
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-16" Name="Channel1" Text="Channel 1" Number="16" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-17" Name="Channel2" Text="Channel 2" Number="17" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-18" Name="Channel3" Text="Channel 3" Number="18" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-19" Name="Channel4" Text="Channel 4" Number="19" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+              <ComObject Id="M-00FA_A-ABCD-99-0000_O-20" Name="Channel5" Text="Channel 5" Number="20" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
+
+
+       
             </ComObjectTable>
+
             <ComObjectRefs>
-              <ComObjectRef Id="M-00FA_A-RGBX-78-0000_O-1_R-1" RefId="M-00FA_A-RGBX-78-0000_O-1" />
-              
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-1_R-1" RefId="M-00FA_A-ABCD-99-0000_O-1" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-2_R-2" RefId="M-00FA_A-ABCD-99-0000_O-2" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-3_R-3" RefId="M-00FA_A-ABCD-99-0000_O-3" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-4_R-4" RefId="M-00FA_A-ABCD-99-0000_O-4" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-5_R-5" RefId="M-00FA_A-ABCD-99-0000_O-5" />
+
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-6_R-6" RefId="M-00FA_A-ABCD-99-0000_O-6" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-7_R-7" RefId="M-00FA_A-ABCD-99-0000_O-7" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-8_R-8" RefId="M-00FA_A-ABCD-99-0000_O-8" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-9_R-9" RefId="M-00FA_A-ABCD-99-0000_O-9" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-10_R-10" RefId="M-00FA_A-ABCD-99-0000_O-10" />
+
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-11_R-11" RefId="M-00FA_A-ABCD-99-0000_O-11" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-12_R-12" RefId="M-00FA_A-ABCD-99-0000_O-12" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-13_R-13" RefId="M-00FA_A-ABCD-99-0000_O-13" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-14_R-14" RefId="M-00FA_A-ABCD-99-0000_O-14" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-15_R-15" RefId="M-00FA_A-ABCD-99-0000_O-15" />
+
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-16_R-16" RefId="M-00FA_A-ABCD-99-0000_O-16" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-17_R-17" RefId="M-00FA_A-ABCD-99-0000_O-17" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-18_R-18" RefId="M-00FA_A-ABCD-99-0000_O-18" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-19_R-19" RefId="M-00FA_A-ABCD-99-0000_O-19" />
+              <ComObjectRef Id="M-00FA_A-ABCD-99-0000_O-20_R-20" RefId="M-00FA_A-ABCD-99-0000_O-20" />
+
+
             </ComObjectRefs>
+            
             <AddressTable MaxEntries="64" />
             <AssociationTable MaxEntries="64" />
             <LoadProcedures>
               <LoadProcedure MergeId="2">
-                <LdCtrlRelSegment LsmIdx="4" Mode="1" Fill="0" Size="100" AppliesTo="full" />
-                <LdCtrlRelSegment LsmIdx="4" Mode="0" Fill="0" Size="100" AppliesTo="par" />
+                <LdCtrlRelSegment LsmIdx="4" Mode="1" Fill="0" Size="16" AppliesTo="full" />
+                <LdCtrlRelSegment LsmIdx="4" Mode="0" Fill="0" Size="16" AppliesTo="par" />
               </LoadProcedure>
               <LoadProcedure MergeId="4">
-                <LdCtrlWriteRelMem ObjIdx="4" Offset="0" Verify="true" Size="100" AppliesTo="full,par" />
+                <LdCtrlWriteRelMem ObjIdx="4" Offset="0" Verify="true" Size="16" AppliesTo="full,par" />
               </LoadProcedure>
             </LoadProcedures> 
             <Options />
           </Static>
+
           <Dynamic>
             <ChannelIndependentBlock>
-              <ParameterBlock Id="M-00FA_A-RGBX-78-0000_PB-1" Name="Docu" Text="Documentation">
+              <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-1" Name="Docu" Text="Documentation">
                 <!-- In this example the first Tab shows some documentation -->
                 <ParameterSeparator Id="M-00FA_A-0000-00-0000_PS-1" Text="Short Intro:" />
                 <!-- A parameter seperator shows just some text -->
-                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-2" Text="This device is made for a specific purpose." />
-                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-3" Text="It controls Underground Floor Heating loops." />
-                <ParameterSeparator Id="M-00FA_A-RGBX-78-0000_PS-4" Text="Different algoritms can be used to control the valves." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-2" Text="This device is made for a specific purpose." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-3" Text="It controls Underground Floor Heating loops." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-4" Text="Different algoritms can be used to control the valves." />
               </ParameterBlock>
-              <ParameterBlock Id="M-00FA_A-RGBX-78-0000_PB-2" Name="Actuals" Text="General Settings">
-                <ParameterRefRef RefId="M-00FA_A-RGBX-78-0000_P-1_R-1" />
- 
-                <ComObjectRefRef RefId="M-00FA_A-RGBX-78-0000_O-1_R-1" />
+              <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-2" Name="Actuals" Text="General Settings">
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-1_R-1" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-2_R-2" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-3_R-3" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-4_R-4" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-5_R-5" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-6_R-6" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-7_R-7" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-8_R-8" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-9_R-9" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-10_R-10" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-11_R-11" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-12_R-12" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-13_R-13" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-14_R-14" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-15_R-15" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-16_R-16" />
 
+                
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-1_R-1" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-2_R-2" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-3_R-3" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-4_R-4" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-5_R-5" />
+
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-6_R-6" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-7_R-7" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-8_R-8" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-9_R-9" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-10_R-10" />
+               
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-11_R-11" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-12_R-12" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-13_R-13" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-14_R-14" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-15_R-15" />
+
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-16_R-16" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-17_R-17" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-18_R-18" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-19_R-19" />
+                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-20_R-20" />
+
+
+              
+            
               </ParameterBlock>
             </ChannelIndependentBlock>
           </Dynamic>
+
         </ApplicationProgram>
       </ApplicationPrograms>
+
       <Hardware>
-        <Hardware Id="M-00FA_H-1009-1" Name="ESP32" SerialNumber="1009" VersionNumber="1" HasIndividualAddress="true" HasApplicationProgram="true" IsIPEnabled="true">
+        <Hardware Id="M-00FA_H-0000-2" Name="ESP32" SerialNumber="0000" VersionNumber="2" BusCurrent="10" HasIndividualAddress="true" HasApplicationProgram="true">
           <Products>
-            <Product Id="M-00FA_H-1009-1_P-IA4309" Text="easytorgb" OrderNumber="IA4309" IsRailMounted="false" DefaultLanguage="en-US" />
+            <Product Id="M-00FA_H-0000-2_P-IA4312" Text="easytorgb" OrderNumber="IA4312" IsRailMounted="false" DefaultLanguage="en-US" />
           </Products>
           <Hardware2Programs>
-            <Hardware2Program Id="M-00FA_H-1009-1_HP-RGBX-78-0000" MediumTypes="MT-5">
-              <ApplicationProgramRef RefId="M-00FA_A-RGBX-78-0000" />
+            <Hardware2Program Id="M-00FA_H-0000-2_HP-0000-00-0000" MediumTypes="MT-5" >
+              <ApplicationProgramRef RefId="M-00FA_A-ABCD-99-0000" />
             </Hardware2Program>
           </Hardware2Programs>
         </Hardware>

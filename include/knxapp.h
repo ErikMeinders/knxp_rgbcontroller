@@ -48,4 +48,9 @@ extern knxapp knxApp;
 void callbackOnOff(GroupObject& go);
 void callbackRGB(GroupObject& go);
 
+
+typedef struct _dptcrgb {
+    uint8_t R, G, B;
+} DPT_Color_RGB;
+
 #endif
