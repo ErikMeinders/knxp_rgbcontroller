@@ -10,10 +10,10 @@
 
       <ApplicationPrograms>
 
-        <ApplicationProgram Id="M-00FA_A-ABCD-99-0000" ApplicationNumber="43981" ApplicationVersion="16" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
+        <ApplicationProgram Id="M-00FA_A-ABCD-99-0000" ApplicationNumber="43981" ApplicationVersion="18" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
           <Static>
             <Code>
-              <RelativeSegment Id="M-00FA_A-ABCD-99-0000_RS-04-00000" Name="Parameters" Offset="0" Size="16" LoadStateMachine="4" />
+              <RelativeSegment Id="M-00FA_A-ABCD-99-0000_RS-04-00000" Name="Parameters" Offset="0" Size="18" LoadStateMachine="4" />
             </Code>
 
             <ParameterTypes>
@@ -23,7 +23,12 @@
               </ParameterType>
 
               <ParameterType Id="M-00FA_A-ABCD-99-0002_PT-RGBByte" Name="RGBByte">
-                <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="255" />
+                <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="255" UIHint="Slider" />
+              </ParameterType>
+
+              
+              <ParameterType Id="M-00FA_A-ABCD-99-0002_PT-CheckBox" Name="CheckBox">
+                <TypeNumber SizeInBit="1" Type="unsignedInt" minInclusive="0" maxInclusive="1" UIHint="CheckBox" />
               </ParameterType>
 
             </ParameterTypes>
@@ -34,56 +39,91 @@
                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="0" BitOffset="0" />
               </Parameter>
 
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-2" Name="Channel1R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Red" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-2" Name="Channel1R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Red" Value="0">
                 <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="1" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-3" Name="Channel1G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Green" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-3" Name="Channel1G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Green" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="2" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-4" Name="Channel1B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 1 Default Blue" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-4" Name="Channel1B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Blue" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="3" BitOffset="0" />
               </Parameter>
 
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-5" Name="Channel2R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Red" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-5" Name="Channel2R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Red" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="4" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-6" Name="Channel2G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Green" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-6" Name="Channel2G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Green" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="5" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-7" Name="Channel2B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 2 Default Blue" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-7" Name="Channel2B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Blue" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="6" BitOffset="0" />
               </Parameter>
 
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-8" Name="Channel3R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Red" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-8" Name="Channel3R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Red" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="7" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-9" Name="Channel3G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Green" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-9" Name="Channel3G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Green" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="8" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-10" Name="Channel3B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 3 Default Blue" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-10" Name="Channel3B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Blue" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="9" BitOffset="0" />
               </Parameter>
 
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-11" Name="Channel4R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Red" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-11" Name="Channel4R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Red" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="10" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-12" Name="Channel4G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Green" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-12" Name="Channel4G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Green" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="11" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-13" Name="Channel4B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 4 Default Blue" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-13" Name="Channel4B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Blue" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="12" BitOffset="0" />
               </Parameter>
 
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-14" Name="Channel5R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Red" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-14" Name="Channel5R" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Red" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="13" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-15" Name="Channel5G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Green" Value="0">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-15" Name="Channel5G" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Green" Value="0">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="14" BitOffset="0" />
               </Parameter>
-              <Parameter Id="M-00FA_A-ABCD-99-0000_P-16" Name="Channel5B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Channel 5 Default Blue" Value="250">
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-16" Name="Channel5B" ParameterType="M-00FA_A-ABCD-99-0002_PT-RGBByte" Text="Default Blue" Value="255">
                  <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="15" BitOffset="0" />
               </Parameter>
 
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-17" Name="Default1" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Start with default color" Value="0">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="16" BitOffset="0" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-18" Name="Default2" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Start with default color" Value="0">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="16" BitOffset="1" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-19" Name="Default3" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Start with default color" Value="0">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="16" BitOffset="2" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-20" Name="Default4" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Start with default color" Value="0">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="16" BitOffset="3" />
+              </Parameter>
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-21" Name="Default5" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Start with default color" Value="0">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="16" BitOffset="4" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-22" Name="Channel1" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Enable Channel 1" Value="1">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="17" BitOffset="0" />     
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-23" Name="Channel2" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Enable Channel 2" Value="1">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="17" BitOffset="1" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-24" Name="Channel3" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Enable Channel 3" Value="1">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="17" BitOffset="2" />
+              </Parameter>
+
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-25" Name="Channel4" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Enable Channel 4" Value="1">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="17" BitOffset="3" />
+              </Parameter>
+              
+              <Parameter Id="M-00FA_A-ABCD-99-0000_P-26" Name="Channel5" ParameterType="M-00FA_A-ABCD-99-0002_PT-CheckBox" Text="Enable Channel 5" Value="1">
+                <Memory CodeSegment="M-00FA_A-ABCD-99-0000_RS-04-00000" Offset="17" BitOffset="4" />
+              </Parameter>
 
             </Parameters>
 
@@ -104,6 +144,20 @@
               <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-14_R-14" RefId="M-00FA_A-ABCD-99-0000_P-14" />
               <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-15_R-15" RefId="M-00FA_A-ABCD-99-0000_P-15" />
               <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-16_R-16" RefId="M-00FA_A-ABCD-99-0000_P-16" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-17_R-17" RefId="M-00FA_A-ABCD-99-0000_P-17" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-18_R-18" RefId="M-00FA_A-ABCD-99-0000_P-18" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-19_R-19" RefId="M-00FA_A-ABCD-99-0000_P-19" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-20_R-20" RefId="M-00FA_A-ABCD-99-0000_P-20" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-21_R-21" RefId="M-00FA_A-ABCD-99-0000_P-21" />
+
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-22_R-22" RefId="M-00FA_A-ABCD-99-0000_P-22" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-23_R-23" RefId="M-00FA_A-ABCD-99-0000_P-23" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-24_R-24" RefId="M-00FA_A-ABCD-99-0000_P-24" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-25_R-25" RefId="M-00FA_A-ABCD-99-0000_P-25" />
+              <ParameterRef Id="M-00FA_A-ABCD-99-0000_P-26_R-26" RefId="M-00FA_A-ABCD-99-0000_P-26" />
+
+
+
 
             </ParameterRefs>
 
@@ -168,11 +222,11 @@
             <AssociationTable MaxEntries="64" />
             <LoadProcedures>
               <LoadProcedure MergeId="2">
-                <LdCtrlRelSegment LsmIdx="4" Mode="1" Fill="0" Size="16" AppliesTo="full" />
-                <LdCtrlRelSegment LsmIdx="4" Mode="0" Fill="0" Size="16" AppliesTo="par" />
+                <LdCtrlRelSegment LsmIdx="4" Mode="1" Fill="0" Size="17" AppliesTo="full" />
+                <LdCtrlRelSegment LsmIdx="4" Mode="0" Fill="0" Size="17" AppliesTo="par" />
               </LoadProcedure>
               <LoadProcedure MergeId="4">
-                <LdCtrlWriteRelMem ObjIdx="4" Offset="0" Verify="true" Size="16" AppliesTo="full,par" />
+                <LdCtrlWriteRelMem ObjIdx="4" Offset="0" Verify="true" Size="17" AppliesTo="full,par" />
               </LoadProcedure>
             </LoadProcedures> 
             <Options />
@@ -185,59 +239,120 @@
                 <ParameterSeparator Id="M-00FA_A-0000-00-0000_PS-1" Text="Short Intro:" />
                 <!-- A parameter seperator shows just some text -->
                 <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-2" Text="This device is made for a specific purpose." />
-                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-3" Text="It controls Underground Floor Heating loops." />
-                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-4" Text="Different algoritms can be used to control the valves." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-3" Text="It controls 5 RGB Channels on an ESP32." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-4" Text="Set the default color per channel." />
+                <ParameterSeparator Id="M-00FA_A-ABCD-99-0000_PS-5" Text="Leaving the box unchecked resets channel to last color." />
               </ParameterBlock>
               <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-2" Name="Actuals" Text="General Settings">
                 <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-1_R-1" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-2_R-2" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-3_R-3" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-4_R-4" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-5_R-5" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-6_R-6" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-7_R-7" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-8_R-8" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-9_R-9" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-10_R-10" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-11_R-11" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-12_R-12" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-13_R-13" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-14_R-14" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-15_R-15" />
-                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-16_R-16" />
-
-                
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-1_R-1" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-2_R-2" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-3_R-3" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-4_R-4" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-5_R-5" />
-
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-6_R-6" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-7_R-7" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-8_R-8" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-9_R-9" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-10_R-10" />
-               
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-11_R-11" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-12_R-12" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-13_R-13" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-14_R-14" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-15_R-15" />
-
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-16_R-16" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-17_R-17" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-18_R-18" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-19_R-19" />
-                <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-20_R-20" />
-
-
-              
-            
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-22_R-22" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-23_R-23" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-24_R-24" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-25_R-25" />
+                <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-26_R-26" />
               </ParameterBlock>
+              
             </ChannelIndependentBlock>
-          </Dynamic>
+            <choose ParamRefId="M-00FA_A-ABCD-99-0000_P-22_R-22">
+              <when test="1">
+                <Channel Id="M-00FA_A-ABCD-99-0000_CH-1" Name="Channel" Number="1" Text="RGB">
+                  <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-3" Name="Channel1" Text="Channel 1">   
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-17_R-17" />
+              
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-2_R-2" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-3_R-3" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-4_R-4" />
 
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-1_R-1" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-6_R-6" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-11_R-11" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-16_R-16" />
+
+                  </ParameterBlock>
+                </Channel>
+              </when>
+            </choose>
+            <choose ParamRefId="M-00FA_A-ABCD-99-0000_P-22_R-23">
+              <when test="1">
+                <Channel Id="M-00FA_A-ABCD-99-0000_CH-2" Name="Channel" Number="2" Text="RGB">
+                  <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-4" Name="Channel2" Text="Channel 2">
+                
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-18_R-18" />
+    
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-5_R-5" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-6_R-6" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-7_R-7" />
+
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-2_R-2" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-7_R-7" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-12_R-12" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-17_R-17" />
+
+                  </ParameterBlock>
+                </Channel>
+              </when>
+            </choose>
+            <choose ParamRefId="M-00FA_A-ABCD-99-0000_P-22_R-24">
+              <when test="1">
+                <Channel Id="M-00FA_A-ABCD-99-0000_CH-3" Name="Channel" Number="3" Text="RGB">
+                  <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-5" Name="Channel3" Text="Channel 3">
+                
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-19_R-19" />
+    
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-8_R-8" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-9_R-9" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-10_R-10" />
+
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-3_R-3" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-8_R-8" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-13_R-13" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-14_R-18" />
+                    
+                  </ParameterBlock>
+                </Channel>
+              </when>
+            </choose>
+            <choose ParamRefId="M-00FA_A-ABCD-99-0000_P-22_R-25">
+              <when test="1">
+                <Channel Id="M-00FA_A-ABCD-99-0000_CH-4" Name="Channel" Number="4" Text="RGB">
+                  <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-6" Name="Channel4" Text="Channel 4">
+                
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-20_R-20" />
+    
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-11_R-11" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-12_R-12" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-13_R-13" />
+
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-4_R-4" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-9_R-9" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-14_R-14" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-19_R-19" />
+                    
+                  </ParameterBlock>
+                </Channel>
+              </when>
+            </choose>
+            <choose ParamRefId="M-00FA_A-ABCD-99-0000_P-22_R-26">
+              <when test="1">
+                <Channel Id="M-00FA_A-ABCD-99-0000_CH-5" Name="Channel" Number="5" Text="RGB">
+                  <ParameterBlock Id="M-00FA_A-ABCD-99-0000_PB-7" Name="Channel5" Text="Channel 5">
+                
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-21_R-21" />
+    
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-14_R-14" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-15_R-15" />
+                    <ParameterRefRef RefId="M-00FA_A-ABCD-99-0000_P-16_R-16" />
+
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-5_R-5" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-10_R-10" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-15_R-15" />
+                    <ComObjectRefRef RefId="M-00FA_A-ABCD-99-0000_O-20_R-20" />
+                    
+                  </ParameterBlock>
+                </Channel>
+              </when>
+            </choose>
+          </Dynamic>
         </ApplicationProgram>
       </ApplicationPrograms>
 

@@ -16,26 +16,20 @@ const int resolution = 8;
 */
 
 
-// physical pins mapped to led channels
+// physical pins indexed by PWM channel
 
 // const uint8_t ledPins[16] = { 2, 4, 5, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36 };
 const uint8_t ledPins[16] = { 99, 99, LED_BUILTIN, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }; // FOR NOW
 
-// RGB channels
+// RGB channels indexed by RGB channel to find 3 PWM channels
 
-typedef struct _RGBChannel{
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-} RGBChannel;
-
-const RGBChannel RGB2PWMchannel[maxChannels] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14} };
+const RGBChannel RGB2PWMchannel[maxRGBChannels] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14} };
 
 void knxapp::setup()
 {
 
     setCyclicTimer(6*knx.paramByte(0));
-    setGroupObjectCount( maxFunctions * maxChannels );
+    setGroupObjectCount( maxFunctions * maxRGBChannels );
 
     // setup all PWM channels with the same frequency and resolution
 
@@ -46,7 +40,7 @@ void knxapp::setup()
         Log.trace("\n");
     }
 
-    // attach the channel to the GPIO to be controlled
+    // attach the PWMchannels to the GPIO to be controlled
     for( int pwmChannel=0; pwmChannel<16; pwmChannel++ )
     {
         Log.trace("Attach PWM channel %d to GPIO %d ", pwmChannel, ledPins[pwmChannel]);
@@ -55,12 +49,13 @@ void knxapp::setup()
     }
 
     // attach the callback functions to the group objects and set the DPT
-    for(int ch=0 ; ch < maxChannels ; ch++)
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
         onOffFunction(ch).callback(callbackOnOff);
         onOffFunction(ch).dataPointType(DPT_Switch);
 
         onOffFeedbackFunction(ch).dataPointType(DPT_Switch);
+        onOffFeedbackFunction(ch).value(false);
 
         rgbSetFunction(ch).callback(callbackRGB);
         rgbSetFunction(ch).dataPointType(DPT_Colour_RGB);
@@ -72,8 +67,6 @@ void knxapp::setup()
     
 }
 
-unsigned long xx=0;
-
 void knxapp::loop()
 {
     
@@ -83,11 +76,14 @@ void knxapp::status()
 {
     _knxapp::status();
 
-    for(int ch=0 ; ch < maxChannels ; ch++)
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
-        uint8_t * rgb = rgbFeedbackFunction(ch).valueRef();
+        GroupObject& go = rgbFeedbackFunction(ch);
+        DPT_Color_RGB rgb; 
         bool on = onOffFeedbackFunction(ch).value();
-        Printf("Channel %d is %s color %02x %02x %02x\n",  ch, on ? "ON " : "Off", rgb[0], rgb[1], rgb[2]);
+
+        getRGBfromGO(go, &rgb);
+        Printf("Channel %d is %s color %02x %02x %02x\n",  ch, on ? "ON " : "Off", rgb.R, rgb.G, rgb.B);
     }
 }
 
@@ -96,17 +92,20 @@ void knxapp::status()
 /**
  * @brief Get RGB channel from group object
  * 
- * @param go 
- * @return DPT_Color_RGB 
+ * @param go
+ * @param rgb
  */
-DPT_Color_RGB getRGBfromGO(GroupObject& go)
+void getRGBfromGO(GroupObject& go, DPT_Color_RGB *rgb)
 {
-    DPT_Color_RGB rgb;
-    uint8_t * rgbValue = go.valueRef();
-    rgb.R = rgbValue[0];
-    rgb.G = rgbValue[1];
-    rgb.B = rgbValue[2];
-    return rgb;
+    DPT_Color_RGB * rgbValue = (DPT_Color_RGB *) go.valueRef();
+
+    Log.trace("Try to retrieve RGB in %d bytes from GO# %d ", go.valueSize(), go.asap());
+
+    rgb->R = rgbValue->R;
+    rgb->G = rgbValue->G;
+    rgb->B = rgbValue->B;
+
+    Log.trace("  RGB %d %d %d\n", rgb->R, rgb->G, rgb->B);
 }
 
 /**
@@ -117,17 +116,26 @@ DPT_Color_RGB getRGBfromGO(GroupObject& go)
  */
 void storeRGBinGO(GroupObject& go, DPT_Color_RGB rgb)
 {
-    uint8_t * rgbValue = go.valueRef();
-    rgbValue[0] = rgb.R;
-    rgbValue[1] = rgb.G;
-    rgbValue[2] = rgb.B;
+    DPT_Color_RGB *  rgbValue = (DPT_Color_RGB *) go.valueRef();
+
+    Log.trace("Try to store RGB in %d bytes in GO# %d\n", go.valueSize(), go.asap());
+
+    Log.trace("  RGB IN %d %d %d\n", rgb.R, rgb.G, rgb.B);
+    rgbValue->R = rgb.R;
+    rgbValue->G = rgb.G;
+    rgbValue->B = rgb.B;
+    go.objectWritten();
     knx.loop();
-    delay(2);
-    
+    delay(20);
+
+    DPT_Color_RGB rgb2;
+    getRGBfromGO(go, &rgb2);
+    Log.trace("  RGB RT %d %d %d\n", rgb2.R, rgb2.G, rgb2.B);
+ 
 }
 
 /**
- * @brief Set 3 PWM channels to RGB value
+ * @brief Set the 3 PWM channels in RGB channel to RGB value
  * 
  * @param rgbCh - RGB channel (0..4)
  * @param rgbValue
@@ -142,14 +150,14 @@ void setRGBChannelToColor(int rgbCh, DPT_Color_RGB rgbValue)
     
     Log.trace("Set RGB channel %d to %d %d %d\n", rgbCh, red, green, blue);
 
-    Log.trace("  Set RED   PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].red,     red);
-    ledcWrite(RGB2PWMchannel[rgbCh].red,    red);
+    Log.trace("  Set RED   PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].redPWMChannel,     red);
+    ledcWrite(RGB2PWMchannel[rgbCh].redPWMChannel,    red);
 
-    Log.trace("  Set GREEN PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].green,   green);
-    ledcWrite(RGB2PWMchannel[rgbCh].green,  green);
+    Log.trace("  Set GREEN PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].greenPWMChannel,   green);
+    ledcWrite(RGB2PWMchannel[rgbCh].greenPWMChannel,  green);
 
-    Log.trace("  Set BLUE  PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].blue,    blue);
-    ledcWrite(RGB2PWMchannel[rgbCh].blue,   blue);
+    Log.trace("  Set BLUE  PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].bluePWMChannel,    blue);
+    ledcWrite(RGB2PWMchannel[rgbCh].bluePWMChannel,   blue);
 
 }
 
@@ -176,7 +184,7 @@ void callbackOnOff(GroupObject& go)
         
         if( parameterChannelStartWithLastColor(rgbCh) )
         {
-            rgb = getRGBfromGO(rgbFeedbackFunction( rgbCh ));
+            getRGBfromGO(rgbFeedbackFunction( rgbCh ), &rgb);
             Log.trace("  Colour retrieved from last known Feedback R %d G %d B %d\n", rgb.R, rgb.G, rgb.B);
         }
         else
@@ -195,13 +203,13 @@ void callbackOnOff(GroupObject& go)
 
         setRGBChannelToColor( rgbCh, rgb );
         storeRGBinGO(rgbFeedbackFunction( rgbCh ), rgb );
-        rgbFeedbackFunction( rgbCh ).value( rgbFeedbackFunction( rgbCh ).value() ); // so that the feedback is sent
         
     } else 
         setRGBChannelToColor( rgbCh, RGB_DARK);
 
     onOffFeedbackFunction( rgbCh ).value( go.value() );
     knx.loop();
+    delay(20);
 }
 
 /**
@@ -212,16 +220,17 @@ void callbackOnOff(GroupObject& go)
 void callbackRGB(GroupObject& go)
 {
     int rgbCh = goToRGBChannel(go);
-    DPT_Color_RGB rgb =  getRGBfromGO(go);
+    DPT_Color_RGB rgb;
+    
+    getRGBfromGO(go, &rgb);
     
     Log.trace("[Callback] change color of RGB channel %d  [%x %x %x]\n", rgbCh, rgb.R, rgb.G, rgb.B);
 
     setRGBChannelToColor( rgbCh, rgb );
 
     storeRGBinGO(rgbFeedbackFunction( rgbCh ), rgb );
-    rgbFeedbackFunction( rgbCh ).value( rgbFeedbackFunction( rgbCh ).value() ); // so that the feedback is sent
 
-    
+    // side-effect of sending color could be the on/off state changes !
     onOffFeedbackFunction( rgbCh ).value( rgb.R != 0 || rgb.G != 0 || rgb.B != 0 );
     knx.loop();
     delay(2);
