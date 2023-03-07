@@ -3,14 +3,29 @@
   <ManufacturerData>
     <Manufacturer RefId="M-00FA">
       <Catalog>
-        <CatalogSection Id="M-00FA_CS-1" Name="Device" Number="1" DefaultLanguage="en-US">
-          <CatalogItem Id="M-00FA_H-0000-2_HP-0000-00-0000_CI-IA4312-1" Name="easytorgb" Number="1" ProductRefId="M-00FA_H-0000-2_P-IA4312" Hardware2ProgramRefId="M-00FA_H-0000-2_HP-0000-00-0000" DefaultLanguage="en-US" />
+        <CatalogSection Id="M-00FA_CS-1" Name="RGB Controllers" Number="1" DefaultLanguage="en-US">
+          <CatalogItem Id="M-00FA_H-0000-2_HP-0000-00-0000_CI-RGB5x3-1" Name="easytorgb 5-RGB"   Number="1" ProductRefId="M-00FA_H-0000-2_P-RGB5x3" Hardware2ProgramRefId="M-00FA_H-0000-2_HP-0000-00-0000" DefaultLanguage="en-US" />
+          <CatalogItem Id="M-00FA_H-0000-2_HP-0000-00-0000_CI-RGB4x4-2" Name="easytorgb 4-RGBW"  Number="2" ProductRefId="M-00FA_H-0000-2_P-RGB4x4" Hardware2ProgramRefId="M-00FA_H-0000-2_HP-0000-00-0000" DefaultLanguage="en-US" />
+          <!-- CatalogItem Id="M-00FA_H-0000-2_HP-0000-00-0000_CI-RGB5x3-3" Name="easytorgb 4-RGBWW" Number="3" ProductRefId="M-00FA_H-0000-2_P-RGB5x3-3" Hardware2ProgramRefId="M-00FA_H-0000-2_HP-0000-00-0000" DefaultLanguage="en-US" / -->
         </CatalogSection>
       </Catalog>
+      <Hardware>
+        <Hardware Id="M-00FA_H-0000-2" Name="ESP32" SerialNumber="0000" VersionNumber="2" BusCurrent="10" HasIndividualAddress="true" HasApplicationProgram="true">
+          <Products>
+            <Product Id="M-00FA_H-0000-2_P-RGB5x3" Text="easytorgb 5xRGB channel"  OrderNumber="RGB5x3" IsRailMounted="false" DefaultLanguage="en-US" />
+            <Product Id="M-00FA_H-0000-2_P-RGB4x4" Text="easytorgb 4xRGBW channel" OrderNumber="RGB4x4" IsRailMounted="false" DefaultLanguage="en-US" />
 
+          </Products>
+          <Hardware2Programs>
+            <Hardware2Program Id="M-00FA_H-0000-2_HP-0000-00-0000" MediumTypes="MT-5" >
+              <ApplicationProgramRef RefId="M-00FA_A-ABCD-99-0000" />
+            </Hardware2Program>
+          </Hardware2Programs>
+        </Hardware>
+      </Hardware>
       <ApplicationPrograms>
 
-        <ApplicationProgram Id="M-00FA_A-ABCD-99-0000" ApplicationNumber="43981" ApplicationVersion="18" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
+        <ApplicationProgram Id="M-00FA_A-ABCD-99-0000" ApplicationNumber="43981" ApplicationVersion="19" ProgramType="ApplicationProgram" MaskVersion="MV-57B0" Name="TK RGBX" LoadProcedureStyle="MergedProcedure" PeiType="0" DefaultLanguage="en-US" DynamicTableManagement="false" Linkable="false" MinEtsVersion="5.0">
           <Static>
             <Code>
               <RelativeSegment Id="M-00FA_A-ABCD-99-0000_RS-04-00000" Name="Parameters" Offset="0" Size="18" LoadStateMachine="4" />
@@ -26,7 +41,6 @@
                 <TypeNumber SizeInBit="8"  Type="unsignedInt" minInclusive="0" maxInclusive="255" UIHint="Slider" />
               </ParameterType>
 
-              
               <ParameterType Id="M-00FA_A-ABCD-99-0002_PT-CheckBox" Name="CheckBox">
                 <TypeNumber SizeInBit="1" Type="unsignedInt" minInclusive="0" maxInclusive="1" UIHint="CheckBox" />
               </ParameterType>
@@ -185,11 +199,6 @@
               <ComObject Id="M-00FA_A-ABCD-99-0000_O-18" Name="Channel3" Text="Channel 3" Number="18" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
               <ComObject Id="M-00FA_A-ABCD-99-0000_O-19" Name="Channel4" Text="Channel 4" Number="19" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
               <ComObject Id="M-00FA_A-ABCD-99-0000_O-20" Name="Channel5" Text="Channel 5" Number="20" FunctionText="Colour Feedback" ObjectSize="3 Bytes" ReadFlag="Enabled" WriteFlag="Disabled" CommunicationFlag="Enabled" TransmitFlag="Enabled" UpdateFlag="Disabled" ReadOnInitFlag="Disabled" DatapointType="DPST-232-600" />
-
-              <ComObject Id="M-00FA_A-ABCD-99-0000_O-21" Name="Channel1" Text="Channel 1" Number="21" FunctionText="Colour Fade Time" ObjectSize="2 Bytes" ReadFlag="Disabled" WriteFlag="Enabled" CommunicationFlag="Enabled" TransmitFlag="Disabled" UpdateFlag="Enabled" ReadOnInitFlag="Enabled" DatapointType="DPST-5-1" />
-              
-
-
        
             </ComObjectTable>
 
@@ -359,18 +368,7 @@
         </ApplicationProgram>
       </ApplicationPrograms>
 
-      <Hardware>
-        <Hardware Id="M-00FA_H-0000-2" Name="ESP32" SerialNumber="0000" VersionNumber="2" BusCurrent="10" HasIndividualAddress="true" HasApplicationProgram="true">
-          <Products>
-            <Product Id="M-00FA_H-0000-2_P-IA4312" Text="easytorgb" OrderNumber="IA4312" IsRailMounted="false" DefaultLanguage="en-US" />
-          </Products>
-          <Hardware2Programs>
-            <Hardware2Program Id="M-00FA_H-0000-2_HP-0000-00-0000" MediumTypes="MT-5" >
-              <ApplicationProgramRef RefId="M-00FA_A-ABCD-99-0000" />
-            </Hardware2Program>
-          </Hardware2Programs>
-        </Hardware>
-      </Hardware>
+      
     </Manufacturer>
   </ManufacturerData>
 </KNX>

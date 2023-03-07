@@ -19,7 +19,7 @@ const int resolution = 8;
 // physical pins indexed by PWM channel
 
 // const uint8_t ledPins[16] = { 2, 4, 5, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36 };
-const uint8_t ledPins[16] = { 99, 99, LED_BUILTIN, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }; // FOR NOW
+const uint8_t ledPins[16] = { 5, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // FOR NOW
 
 // RGB channels indexed by RGB channel to find 3 PWM channels
 
@@ -43,9 +43,12 @@ void knxapp::setup()
     // attach the PWMchannels to the GPIO to be controlled
     for( int pwmChannel=0; pwmChannel<16; pwmChannel++ )
     {
-        Log.trace("Attach PWM channel %d to GPIO %d ", pwmChannel, ledPins[pwmChannel]);
-        ledcAttachPin(ledPins[pwmChannel], pwmChannel);
-        Log.trace("\n");
+        if (ledPins[pwmChannel])
+        {
+            Log.trace("Attach PWM channel %d to GPIO %d ", pwmChannel, ledPins[pwmChannel]);
+            ledcAttachPin(ledPins[pwmChannel], pwmChannel);
+            Log.trace("\n");
+        }
     }
 
     // attach the callback functions to the group objects and set the DPT
@@ -63,7 +66,7 @@ void knxapp::setup()
         rgbFeedbackFunction(ch).dataPointType(DPT_Colour_RGB);
 
     }
-    knx.ledPin(30); // TEMPORARY SETTING !!!
+    // knx.ledPin(30); // TEMPORARY SETTING when using LED_BUILDIN for PWM tests !!!
     
 }
 
@@ -99,7 +102,7 @@ void getRGBfromGO(GroupObject& go, DPT_Color_RGB *rgb)
 {
     DPT_Color_RGB * rgbValue = (DPT_Color_RGB *) go.valueRef();
 
-    Log.trace("Try to retrieve RGB in %d bytes from GO# %d ", go.valueSize(), go.asap());
+    Log.trace("Retrieve RGB in %d bytes from GO# %d ", go.valueSize(), go.asap());
 
     rgb->R = rgbValue->R;
     rgb->G = rgbValue->G;
@@ -118,16 +121,18 @@ void storeRGBinGO(GroupObject& go, DPT_Color_RGB rgb)
 {
     DPT_Color_RGB *  rgbValue = (DPT_Color_RGB *) go.valueRef();
 
-    Log.trace("Try to store RGB in %d bytes in GO# %d\n", go.valueSize(), go.asap());
+    Log.trace("Store RGB in %d bytes in GO# %d\n", go.valueSize(), go.asap());
 
     Log.trace("  RGB IN %d %d %d\n", rgb.R, rgb.G, rgb.B);
     rgbValue->R = rgb.R;
     rgbValue->G = rgb.G;
     rgbValue->B = rgb.B;
+
     go.objectWritten();
     knx.loop();
     delay(20);
 
+    // compare!
     DPT_Color_RGB rgb2;
     getRGBfromGO(go, &rgb2);
     Log.trace("  RGB RT %d %d %d\n", rgb2.R, rgb2.G, rgb2.B);
@@ -184,8 +189,8 @@ void callbackOnOff(GroupObject& go)
         
         if( parameterChannelStartWithLastColor(rgbCh) )
         {
-            getRGBfromGO(rgbFeedbackFunction( rgbCh ), &rgb);
-            Log.trace("  Colour retrieved from last known Feedback R %d G %d B %d\n", rgb.R, rgb.G, rgb.B);
+            getRGBfromGO(rgbSetFunction( rgbCh ), &rgb);
+            Log.trace("  ON Colour retrieved from Set function R %d G %d B %d\n", rgb.R, rgb.G, rgb.B);
         }
         else
         {
@@ -193,7 +198,7 @@ void callbackOnOff(GroupObject& go)
             rgb.G = knx.paramByte(rgbCh*3+2);
             rgb.B = knx.paramByte(rgbCh*3+3);
 
-            Log.trace("  Colour retrieved from Parameters R %d G %d B %d\n", rgb.R, rgb.G, rgb.B);
+            Log.trace("  ON Colour retrieved from Parameters R %d G %d B %d\n", rgb.R, rgb.G, rgb.B);
         }
 
         // 'Emergency'-value: if all channels are 0, set to white dimmed - otherwise the LEDs will be off when turning on
@@ -204,8 +209,10 @@ void callbackOnOff(GroupObject& go)
         setRGBChannelToColor( rgbCh, rgb );
         storeRGBinGO(rgbFeedbackFunction( rgbCh ), rgb );
         
-    } else 
+    } else {
         setRGBChannelToColor( rgbCh, RGB_DARK);
+        storeRGBinGO(rgbFeedbackFunction( rgbCh ), RGB_DARK );
+    }
 
     onOffFeedbackFunction( rgbCh ).value( go.value() );
     knx.loop();

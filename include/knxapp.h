@@ -41,7 +41,7 @@ extern knxapp knxApp;
 
 #define goToRGBChannel(go)        ((go.asap()-1) % maxRGBChannels )
 
-#define parameterChannelStartWithLastColor(n) 1
+#define parameterChannelStartWithLastColor(n) !(knx.paramByte(17) & (1 << n))
 
 #define parameterChannelStartColor(n) knx.paramData(n * 3 + 1)
 
