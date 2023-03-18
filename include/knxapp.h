@@ -10,7 +10,7 @@ class knxapp : public _knxapp
   public:
     // void progress(int step, const char *msg);  // callback for knxp_platformio
 
-    // void  pinsetup();    // before anything else
+    // void  pinsetup();       // before anything else
     // void  conf();        // after Wifi, NTP and Telnet
 
     void setup() ;          // after KNX configuration before KNX start  
@@ -27,17 +27,19 @@ class knxapp : public _knxapp
 extern knxapp knxApp;
 
 #define maxRGBChannels            5
-#define maxFunctions              4
+#define maxFunctions              5
 
 #define onOffFunctionNr           0
 #define onOffFeedbackFunctionNr   1
 #define rgbSetFunctionNr          2
 #define rgbFeedbackFunctionNr     3
+#define rgbRunColorFunctionNr     4
 
 #define onOffFunction(ch)         knx.getGroupObject(ch+maxRGBChannels*onOffFunctionNr+1)
 #define onOffFeedbackFunction(ch) knx.getGroupObject(ch+maxRGBChannels*onOffFeedbackFunctionNr+1)
 #define rgbSetFunction(ch)        knx.getGroupObject(ch+maxRGBChannels*rgbSetFunctionNr+1)
 #define rgbFeedbackFunction(ch)   knx.getGroupObject(ch+maxRGBChannels*rgbFeedbackFunctionNr+1)
+#define rgbRunColorFunction(ch)   knx.getGroupObject(ch+maxRGBChannels*rgbRunColorFunctionNr+1)
 
 #define goToRGBChannel(go)        ((go.asap()-1) % maxRGBChannels )
 
@@ -66,7 +68,7 @@ typedef struct _RGBChannel{
 } RGBChannel;
 
 void getRGBfromGO(GroupObject& go, DPT_Color_RGB* rgb );
-void storeRGBinGO(GroupObject& go, DPT_Color_RGB rgb);
+void storeRGBinGO(GroupObject& go, DPT_Color_RGB rgb, bool publish = true);
 void setRGBChannelToColor(int rgbCh, DPT_Color_RGB rgbValue);
 
 
