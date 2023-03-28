@@ -13,12 +13,6 @@ const RGBChannel RGB2PWMchannel[maxRGBChannels] = {
     {12, 13, 14 }
 };
 
-#ifdef RUN_TEST_PATTERN
-DECLARE_TIMER( ColorChange, 5 );
-DPT_Color_RGB loopRGB; 
-int loopColor = 0;
-#endif
-
 // helper functions for KNX RGB Data Type
 
 /**

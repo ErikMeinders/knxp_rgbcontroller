@@ -11,6 +11,13 @@ const int resolution = 8;
 DECLARE_TIMER( AmpCycle, 1 );
 DECLARE_TIMER( knxRestart, 60 );
 
+
+#ifdef RUN_TEST_PATTERN
+DECLARE_TIMER( ColorChange, 5 );
+DPT_Color_RGB loopRGB; 
+int loopColor = 0;
+#endif
+
 /*
 * PWM channel is hardware, maps onto GPIO pins on ESP32
 * RGB channel is software, maps onto a group object
@@ -183,7 +190,7 @@ void knxapp::loop()
 
     static double sum = 0.0;
     static int count = 0;
-    double moving_avg = 0.0;
+    static double moving_avg = 0.0;
     static int WINDOW_SIZE = 5;
 
     if(DUE(AmpCycle))
@@ -198,25 +205,26 @@ void knxapp::loop()
         mVolt = mVolt - 1300.0;
         Amps = mVolt / 65 ; // 65 = 1300 / 20
         
-        sum += Amps;
-        count++;
-        if(count > WINDOW_SIZE)
+        if(count >= WINDOW_SIZE)
         {
             sum = moving_avg * (WINDOW_SIZE-1) + Amps;
-            moving_avg = (double) (sum / (double) WINDOW_SIZE);
+            moving_avg = sum /  WINDOW_SIZE;
+        } else {
+            sum += Amps;
+            count++;
+
+            moving_avg = sum / count;
         }
-        else
-        {
-            moving_avg = (double) (sum / (double) count);
-            Printf(" moving_avg {%d} = %6.1f Amp.\r", count, moving_avg);
-        }
-        Printf("Sensor value: %d | %6.1f mV | %6.1f Amp. | Avg {5} %6.1f Amp.\r", readValue, mVolt, Amps, moving_avg);
+        Printf("Sensor value: %d | %6.1f mV | %4.1f A | Moving Avg: %4.1f A\r", readValue, mVolt, Amps, moving_avg);
 
     }
  
     if(DUE(knxRestart))
     {
-        knx.restart(knx.individualAddress());
+        // knx.restart(knx.individualAddress());
+        //knx.multicast_ip = IPAddress(224, 0, 23, 12);
+        //WiFi.multicast_ip.subscribers();
+
     }
  
 }
