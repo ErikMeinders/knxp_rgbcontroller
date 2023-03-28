@@ -17,12 +17,12 @@ DECLARE_TIMER( knxRestart, 60 );
 * RGB2PWM channel is software, maps RGB onto a PWM channel
 */
 
-
 // physical pins indexed by PWM channel
 
 const uint8_t ledPins[16] = { 33, 25, 26, 27, 14, 12, 13, 23, 22, 21, 19, 18, 17, 16, 15, 0 }; // FOR ESP32 DEV BOARD
 
-void knxProgledOn() {
+void knxProgledOn() 
+{
 
     DPT_Color_RGB loopRGB; 
     loopRGB.R = 0;
@@ -36,7 +36,8 @@ void knxProgledOn() {
     setRGBChannelToColor(4, loopRGB);
 }
 
-void knxProgledOff() {
+void knxProgledOff() 
+{
     
     DPT_Color_RGB loopRGB; 
     loopRGB.R = 0;
@@ -180,6 +181,11 @@ void knxapp::loop()
 
 #endif
 
+    static double sum = 0.0;
+    static int count = 0;
+    double moving_avg = 0.0;
+    static int WINDOW_SIZE = 5;
+
     if(DUE(AmpCycle))
     {
         double mVolt = 0.0;
@@ -192,15 +198,27 @@ void knxapp::loop()
         mVolt = mVolt - 1300.0;
         Amps = mVolt / 65 ; // 65 = 1300 / 20
         
-        Printf("Sensor value: %d | voltage: %6.1f mV | %6.1f Amp.\r", readValue, mVolt, Amps);
+        sum += Amps;
+        count++;
+        if(count > WINDOW_SIZE)
+        {
+            sum = moving_avg * (WINDOW_SIZE-1) + Amps;
+            moving_avg = (double) (sum / (double) WINDOW_SIZE);
+        }
+        else
+        {
+            moving_avg = (double) (sum / (double) count);
+            Printf(" moving_avg {%d} = %6.1f Amp.\r", count, moving_avg);
+        }
+        Printf("Sensor value: %d | %6.1f mV | %6.1f Amp. | Avg {5} %6.1f Amp.\r", readValue, mVolt, Amps, moving_avg);
 
     }
-/* 
+ 
     if(DUE(knxRestart))
     {
         knx.restart(knx.individualAddress());
     }
- */
+ 
 }
 
 void knxapp::status()
