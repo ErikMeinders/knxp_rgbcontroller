@@ -130,13 +130,8 @@ void setRGBChannelToColor(int rgbCh, DPT_Color_RGB rgbValue)
     
     Log.trace("Set RGB channel %d to %d %d %d\n", rgbCh, red, green, blue);
 
-    Log.trace("  Set RED   PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].redPWMChannel,     red);
     ledcWrite(RGB2PWMchannel[rgbCh].redPWMChannel,    red);
-
-    Log.trace("  Set GREEN PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].greenPWMChannel,   green);
     ledcWrite(RGB2PWMchannel[rgbCh].greenPWMChannel,  green);
-
-    Log.trace("  Set BLUE  PWM channel %d to %d \n", RGB2PWMchannel[rgbCh].bluePWMChannel,    blue);
     ledcWrite(RGB2PWMchannel[rgbCh].bluePWMChannel,   blue);
 
 }

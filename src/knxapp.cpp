@@ -5,12 +5,13 @@ DECLARE_TIMERms(colorFlow, 20);
 
 knxapp knxApp;
 
+// PWM constants
+
 const int freq = 5000;
 const int resolution = 8;
 
 DECLARE_TIMER( AmpCycle, 1 );
 DECLARE_TIMER( knxRestart, 60 );
-
 
 #ifdef RUN_TEST_PATTERN
 DECLARE_TIMER( ColorChange, 5 );
@@ -70,12 +71,7 @@ void knxapp::setup()
         digitalWrite(0, HIGH);
         delay(100);
     }
-
-    // analogSetPinAttenuation(39, ADC_2_5db);
-
-    setCyclicTimer(60*knx.paramByte(0));
-    setGroupObjectCount( maxFunctions * maxRGBChannels );
-
+  
     // setup all PWM channels with the same frequency and resolution
 
     for( int pwmChannel=0; pwmChannel<16; pwmChannel++ )
@@ -97,6 +93,7 @@ void knxapp::setup()
     }
 
     // attach the callback functions to the group objects and set the DPT
+
     for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
         // function 0 is on/off
@@ -119,6 +116,12 @@ void knxapp::setup()
         rgbRunColorFunction(ch).dataPointType(DPT_Switch);
 
     }
+    
+     // process ETS parameters
+    
+    setCyclicTimer(60*knx.paramByte(0));
+    setGroupObjectCount( maxFunctions * maxRGBChannels );
+
     knx.setProgLedOnCallback(knxProgledOn);
     knx.setProgLedOffCallback(knxProgledOff);
 
