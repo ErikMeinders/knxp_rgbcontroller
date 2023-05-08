@@ -19,7 +19,7 @@ class knxapp : public _knxapp
     // char* hostname();    // callback by knxp_platformio | default: HOSTNAME / "knx_device"
     void  status();      // callback for additonal status information Menu item 'S'
 
-    // void setRGBChannelToColor(int rgbch, const char* value);
+    // void putRGBinHW(int rgbch, const char* value);
     
 
 };
@@ -33,19 +33,20 @@ extern knxapp knxApp;
 #define onOffFeedbackFunctionNr   1
 #define rgbSetFunctionNr          2
 #define rgbFeedbackFunctionNr     3
-#define rgbRunColorFunctionNr     4
+#define rgbColorFlowFunctionNr    4
 
 #define onOffFunction(ch)         knx.getGroupObject(ch+maxRGBChannels*onOffFunctionNr+1)
 #define onOffFeedbackFunction(ch) knx.getGroupObject(ch+maxRGBChannels*onOffFeedbackFunctionNr+1)
 #define rgbSetFunction(ch)        knx.getGroupObject(ch+maxRGBChannels*rgbSetFunctionNr+1)
 #define rgbFeedbackFunction(ch)   knx.getGroupObject(ch+maxRGBChannels*rgbFeedbackFunctionNr+1)
-#define rgbRunColorFunction(ch)   knx.getGroupObject(ch+maxRGBChannels*rgbRunColorFunctionNr+1)
+#define rgbColorFlowFunction(ch)  knx.getGroupObject(ch+maxRGBChannels*rgbColorFlowFunctionNr+1)
 
 #define goToRGBChannel(go)        ((go.asap()-1) % maxRGBChannels )
 
-#define parameterChannelStartWithLastColor(n) !(knx.paramByte(17) & (1 << n))
+#define parameterChannelStartWithDefaultColor(n)  ((knx.paramByte(16) & (1 << (7-n))))
+#define parameterChannelEnabled(n)                ((knx.paramByte(17) & (1 << (7-n)))) 
 
-#define parameterChannelStartColor(n) knx.paramData(n * 3 + 1)
+//#define parameterChannelStartColor(n) knx.paramData(n * 3 + 1)
 
 /**
  * @brief struct holding the RGB values as Data Point Type 232.600
@@ -67,10 +68,10 @@ typedef struct _RGBChannel{
     uint8_t  bluePWMChannel;
 } RGBChannel;
 
-void getRGBfromGO(GroupObject& go, DPT_Color_RGB* rgb );
-void storeRGBinGO(GroupObject& go, DPT_Color_RGB rgb, bool publish = true);
-void setRGBChannelToColor(int rgbCh, DPT_Color_RGB rgbValue);
-
+void getRGBfromGO(GroupObject& go, DPT_Color_RGB& rgb );
+void putRGBinGO(GroupObject& go, DPT_Color_RGB rgb, bool publish = true);
+void getRGBfromHW(int rgbCh, DPT_Color_RGB& rgb);
+void putRGBinHW(int rgbCh, DPT_Color_RGB rgbValue);
 
 void callbackOnOff(GroupObject& go);
 void callbackRGB(GroupObject& go);

@@ -1,17 +1,27 @@
 #include <knxp_platformio.h>
 #include "rgbapp.h"
+#include "FS.h"
+#include "SPIFFS.h"
+
 DECLARE_TIMER( YourCodeShoutOut, 5 );
 DECLARE_TIMERms(colorFlow, 20);
 
 knxapp knxApp;
+
+bool spiffMountedInSetup = false;
+
+#ifdef KNX_NO_AUTOMATIC_GLOBAL_INSTANCE
+Esp32Platform knxPlatform(&Serial2);
+Bau07B0 knxBau(knxPlatform);
+KnxFacade<Esp32Platform, Bau07B0> knx(knxBau);
+#endif
 
 // PWM constants
 
 const int freq = 5000;
 const int resolution = 8;
 
-DECLARE_TIMER( AmpCycle, 1 );
-DECLARE_TIMER( knxRestart, 60 );
+DECLARE_TIMER( AmpCycle, 5 );
 
 #ifdef RUN_TEST_PATTERN
 DECLARE_TIMER( ColorChange, 5 );
@@ -27,51 +37,54 @@ int loopColor = 0;
 
 // physical pins indexed by PWM channel
 
-const uint8_t ledPins[16] = { 33, 25, 26, 27, 14, 12, 13, 23, 22, 21, 19, 18, 17, 16, 15, 0 }; // FOR ESP32 DEV BOARD
+#ifndef DEVBOARD_LEDS
+const uint8_t ledPins[16] = {   33, 25, 26, 
+                                27, 14, 12, 
+                                13, 23, 22, 
+                                21, 19, 18, 
+                                17, 16, 15, 
+                                0 };  
+#else
+const uint8_t ledPins[16] = { 17, 16, 15, 27, 14, 12, 13, 23, 22, 21, 19, 18, 0, 0, 0, 0 };  
+#endif
 
+void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb)
+{
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
+    {
+        if(parameterChannelEnabled(ch))
+            putRGBinHW( ch , rgb );
+    }
+}
 void knxProgledOn() 
 {
+    DPT_Color_RGB progModeColor = { 0, 0, 128 }; 
 
-    DPT_Color_RGB loopRGB; 
-    loopRGB.R = 0;
-    loopRGB.G = 0;
-    loopRGB.B = 128;
-
-    setRGBChannelToColor(0, loopRGB);
-    setRGBChannelToColor(1, loopRGB);
-    setRGBChannelToColor(2, loopRGB);
-    setRGBChannelToColor(3, loopRGB);
-    setRGBChannelToColor(4, loopRGB);
+    setAllEnabledChannelsToRGB(progModeColor);
 }
 
 void knxProgledOff() 
 {
-    
-    DPT_Color_RGB loopRGB; 
-    loopRGB.R = 0;
-    loopRGB.G = 0;
-    loopRGB.B = 0;
+    DPT_Color_RGB noProg = { 0, 64, 0 }; 
 
-    setRGBChannelToColor(0, loopRGB);
-    setRGBChannelToColor(1, loopRGB);
-    setRGBChannelToColor(2, loopRGB);
-    setRGBChannelToColor(3, loopRGB);
-    setRGBChannelToColor(4, loopRGB);
+    setAllEnabledChannelsToRGB(noProg);
 }
 
 void knxapp::setup()
 {
     // watchdog reset
 
-    pinMode(0, OUTPUT);
+#ifndef NO_HEARTBEAT
+    pinMode(PIN_RESETWATCHDOG, OUTPUT);
     for(int i=0; i<3; i++)
     {
-        digitalWrite(0, LOW);
+        digitalWrite(PIN_RESETWATCHDOG, LOW);
         delay(100);
-        digitalWrite(0, HIGH);
+        digitalWrite(PIN_RESETWATCHDOG, HIGH);
         delay(100);
     }
-  
+#endif
+
     // setup all PWM channels with the same frequency and resolution
 
     for( int pwmChannel=0; pwmChannel<16; pwmChannel++ )
@@ -82,7 +95,8 @@ void knxapp::setup()
     }
 
     // attach the PWMchannels to the GPIO to be controlled
-    for( int pwmChannel=0; pwmChannel<16; pwmChannel++ )
+
+    for( int pwmChannel=0; pwmChannel<16; pwmChannel++ ) 
     {
         if (ledPins[pwmChannel])
         {
@@ -94,26 +108,44 @@ void knxapp::setup()
 
     // attach the callback functions to the group objects and set the DPT
 
+    delay(5000); // allow for telnet to connect;
+
     for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
+        delay(5);
+
+        // setup DPT for all functions, no callback if channel is not enabled
+
+        Log.verbose("Setup RGB channel %d\n", ch);
+        
         // function 0 is on/off
-        onOffFunction(ch).callback(callbackOnOff);
+
+        if (parameterChannelEnabled(ch))
+            onOffFunction(ch).callback(callbackOnOff);
+
         onOffFunction(ch).dataPointType(DPT_Switch);
-
+        
         // function 1 is on/off feedback
-        onOffFeedbackFunction(ch).dataPointType(DPT_Switch);
-        onOffFeedbackFunction(ch).value(false);
 
+        onOffFeedbackFunction(ch).dataPointType(DPT_Switch);
+        
         // function 2 is RGB set
-        rgbSetFunction(ch).callback(callbackRGB);
+
+        if(parameterChannelEnabled(ch))
+            rgbSetFunction(ch).callback(callbackRGB);
+
         rgbSetFunction(ch).dataPointType(DPT_Colour_RGB);
 
         // function 3 is RGB feedback
+
         rgbFeedbackFunction(ch).dataPointType(DPT_Colour_RGB);
 
-        // function 4 is RGB run
-        rgbRunColorFunction(ch).callback(callbackRGBRun);
-        rgbRunColorFunction(ch).dataPointType(DPT_Switch);
+        // function 4 is RGB Color Flow
+
+        if(parameterChannelEnabled(ch))
+            rgbColorFlowFunction(ch).callback(callbackRGBRun);
+
+        rgbColorFlowFunction(ch).dataPointType(DPT_Switch);
 
     }
     
@@ -122,15 +154,23 @@ void knxapp::setup()
     setCyclicTimer(60*knx.paramByte(0));
     setGroupObjectCount( maxFunctions * maxRGBChannels );
 
-    knx.setProgLedOnCallback(knxProgledOn);
-    knx.setProgLedOffCallback(knxProgledOff);
+    spiffMountedInSetup = SPIFFS.begin();
 
-    Log.setLevel(LOG_LEVEL_WARNING);
+    if(spiffMountedInSetup)
+    {
+        Log.notice("SPIFFS mounted in setup\n");
+    } else {
+        Log.error("SPIFFS mount in setup failed\n");
+    }
+
+    Log.setLevel(4);
 }
 
 void knxapp::loop()
 {
 
+    // _knxapp::loop();
+   
 #ifdef RUN_TEST_PATTERN
        if( DUE( ColorChange ) )
        {
@@ -163,27 +203,27 @@ void knxapp::loop()
                 loopRGB.B = 255;
                 break;
           }
-          setRGBChannelToColor(0, loopRGB);  
-          setRGBChannelToColor(1, loopRGB);
-          setRGBChannelToColor(2, loopRGB);
-          setRGBChannelToColor(3, loopRGB);
-          setRGBChannelToColor(4, loopRGB); 
+          putRGBinHW(0, loopRGB);  
+          putRGBinHW(1, loopRGB);
+          putRGBinHW(2, loopRGB);
+          putRGBinHW(3, loopRGB);
+          putRGBinHW(4, loopRGB); 
        }
 #else
     // check if any of the RGB channels is in color flow mode
 
-    if( DUE( colorFlow ))
+    if( DUE( colorFlow )) 
     {
         for(int ch=0 ; ch < maxRGBChannels ; ch++)
         {
-            if( rgbRunColorFunction(ch).value() )
+            if( rgbColorFlowFunction(ch).value() && parameterChannelEnabled(ch))
             {
                 DPT_Color_RGB currentRGB, nextRGB;
                 
-                getRGBfromGO(rgbFeedbackFunction(ch), &currentRGB);
-                nextRGB = nextColor(currentRGB);
-                setRGBChannelToColor(ch, nextRGB);
-                storeRGBinGO(rgbFeedbackFunction( ch ), nextRGB, false );
+                getRGBfromGO(rgbFeedbackFunction(ch), currentRGB);
+                nextColor(currentRGB, nextRGB);
+                putRGBinHW(ch, nextRGB);
+                putRGBinGO(rgbFeedbackFunction( ch ), nextRGB, false );
 
             }
         }
@@ -196,14 +236,15 @@ void knxapp::loop()
     static double moving_avg = 0.0;
     static int WINDOW_SIZE = 5;
 
-    if(DUE(AmpCycle))
+#ifdef CURRENT_SENSOR_PIN
+    if(DUE(AmpCycle) && false)
     {
         double mVolt = 0.0;
         double Amps = 0.0;
         // analogSetCycles(100);
-        analogSetPinAttenuation(39, ADC_11db);
-        adcAttachPin(39);
-        int readValue = analogRead(39); // 0 - 4095
+        analogSetPinAttenuation(CURRENT_SENSOR_PIN, ADC_11db);
+        adcAttachPin(CURRENT_SENSOR_PIN);
+        int readValue = analogRead(CURRENT_SENSOR_PIN); // 0 - 4095
         mVolt = (readValue / 4096.0) * 3300.0;
         mVolt = mVolt - 1300.0;
         Amps = mVolt / 65 ; // 65 = 1300 / 20
@@ -221,29 +262,15 @@ void knxapp::loop()
         Printf("Sensor value: %d | %6.1f mV | %4.1f A | Moving Avg: %4.1f A\r", readValue, mVolt, Amps, moving_avg);
 
     }
- 
-    if(DUE(knxRestart))
-    {
-        // knx.restart(knx.individualAddress());
-        //knx.multicast_ip = IPAddress(224, 0, 23, 12);
-        //WiFi.multicast_ip.subscribers();
+#endif
 
-    }
- 
+    
 }
 
 void knxapp::status()
 {
     _knxapp::status();
 
-    for(int ch=0 ; ch < maxRGBChannels ; ch++)
-    {
-        GroupObject& go = rgbFeedbackFunction(ch);
-        DPT_Color_RGB rgb; 
-        bool on = onOffFeedbackFunction(ch).value();
-
-        getRGBfromGO(go, &rgb);
-        Printf("Channel %d is %s color %02x %02x %02x\n",  ch, on ? "ON " : "Off", rgb.R, rgb.G, rgb.B);
-    }
+    rgbStatus();
 }
 
