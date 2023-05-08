@@ -1,5 +1,6 @@
 #include <knxapp.h>
 
+void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb);
 
 void getRGBfromGO(GroupObject& go, DPT_Color_RGB& rgb);
 
@@ -17,5 +18,8 @@ void callbackRGBRun(GroupObject& go);
 
 void startColorFlow(int ch);
 void stopColorFlow(int ch);
+
+void rgbColorFlowPattern0();
+void rgbColorFlowPattern1();
 
 void rgbStatus();

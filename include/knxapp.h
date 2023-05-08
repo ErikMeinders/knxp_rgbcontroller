@@ -43,10 +43,8 @@ extern knxapp knxApp;
 
 #define goToRGBChannel(go)        ((go.asap()-1) % maxRGBChannels )
 
-#define parameterChannelStartWithDefaultColor(n)  ((knx.paramByte(16) & (1 << (7-n))))
-#define parameterChannelEnabled(n)                ((knx.paramByte(17) & (1 << (7-n)))) 
-
-//#define parameterChannelStartColor(n) knx.paramData(n * 3 + 1)
+#define parameterChannelStartWithDefaultColor(ch)  ((knx.paramByte(16) & (1 << (7-ch))))
+#define parameterChannelEnabled(ch)                ((knx.paramByte(17) & (1 << (7-ch)))) 
 
 /**
  * @brief struct holding the RGB values as Data Point Type 232.600

@@ -1,9 +1,9 @@
 #include <knxp_platformio.h>
 #include "rgbapp.h"
+#include "amps.h"
 #include "FS.h"
 #include "SPIFFS.h"
 
-DECLARE_TIMER( YourCodeShoutOut, 5 );
 DECLARE_TIMERms(colorFlow, 20);
 
 knxapp knxApp;
@@ -21,12 +21,12 @@ KnxFacade<Esp32Platform, Bau07B0> knx(knxBau);
 const int freq = 5000;
 const int resolution = 8;
 
-DECLARE_TIMER( AmpCycle, 5 );
+#ifdef CURRENT_SENSOR_PIN
+DECLARE_TIMER( AmpCycle, 30 );
+#endif
 
 #ifdef RUN_TEST_PATTERN
 DECLARE_TIMER( ColorChange, 5 );
-DPT_Color_RGB loopRGB; 
-int loopColor = 0;
 #endif
 
 /*
@@ -48,14 +48,11 @@ const uint8_t ledPins[16] = {   33, 25, 26,
 const uint8_t ledPins[16] = { 17, 16, 15, 27, 14, 12, 13, 23, 22, 21, 19, 18, 0, 0, 0, 0 };  
 #endif
 
-void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb)
-{
-    for(int ch=0 ; ch < maxRGBChannels ; ch++)
-    {
-        if(parameterChannelEnabled(ch))
-            putRGBinHW( ch , rgb );
-    }
-}
+
+/**
+ * @brief callback for programming mode LED feedback (ON)
+ * 
+ */
 void knxProgledOn() 
 {
     DPT_Color_RGB progModeColor = { 0, 0, 128 }; 
@@ -63,6 +60,10 @@ void knxProgledOn()
     setAllEnabledChannelsToRGB(progModeColor);
 }
 
+/**
+ * @brief callback for programming mode LED feedback (OFF)
+ * 
+ */
 void knxProgledOff() 
 {
     DPT_Color_RGB noProg = { 0, 64, 0 }; 
@@ -70,6 +71,10 @@ void knxProgledOff()
     setAllEnabledChannelsToRGB(noProg);
 }
 
+/**
+ * @brief override of the _knxapp::setup() method
+ * 
+ */
 void knxapp::setup()
 {
     // watchdog reset
@@ -79,9 +84,9 @@ void knxapp::setup()
     for(int i=0; i<3; i++)
     {
         digitalWrite(PIN_RESETWATCHDOG, LOW);
-        delay(100);
+        delay(30);
         digitalWrite(PIN_RESETWATCHDOG, HIGH);
-        delay(100);
+        delay(30);
     }
 #endif
 
@@ -106,9 +111,11 @@ void knxapp::setup()
         }
     }
 
-    // attach the callback functions to the group objects and set the DPT
+#ifdef TELNET_CONNECT_DELAY
+    delay(TELNET_CONNECT_DELAY); // allow for telnet to connect;
+#endif
 
-    delay(5000); // allow for telnet to connect;
+    // attach the callback functions to the group objects and set the DPT
 
     for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
@@ -163,110 +170,48 @@ void knxapp::setup()
         Log.error("SPIFFS mount in setup failed\n");
     }
 
-    Log.setLevel(4);
+    knx.setProgLedOffCallback(knxProgledOff);
+    knx.setProgLedOnCallback(knxProgledOn);
+
+#ifndef TELNET_CONNECT_DELAY
+    Log.setLevel(2);
+#endif
+
 }
 
+/**
+ * @brief override of the _knxapp::loop() method
+ * 
+ */
 void knxapp::loop()
 {
 
-    // _knxapp::loop();
-   
-#ifdef RUN_TEST_PATTERN
-       if( DUE( ColorChange ) )
-       {
-          loopColor = (loopColor + 1) % 5;
-          switch(loopColor)
-          {
-            case 0:
-                loopRGB.R = 0;
-                loopRGB.G = 0;
-                loopRGB.B = 0;
-                break;
-            case 1:
-                loopRGB.R = 255;
-                loopRGB.G = 0;
-                loopRGB.B = 0;
-                break;
-            case 2:
-                loopRGB.R = 0;
-                loopRGB.G = 255;
-                loopRGB.B = 0;
-                break;
-            case 3:
-                loopRGB.R = 0;
-                loopRGB.G = 0;
-                loopRGB.B = 255;
-                break;
-            case 4:
-                loopRGB.R = 255;
-                loopRGB.G = 255;
-                loopRGB.B = 255;
-                break;
-          }
-          putRGBinHW(0, loopRGB);  
-          putRGBinHW(1, loopRGB);
-          putRGBinHW(2, loopRGB);
-          putRGBinHW(3, loopRGB);
-          putRGBinHW(4, loopRGB); 
-       }
+#ifndef RUN_TEST_PATTERN
+
+    if(DUE( colorFlow )) 
+        rgbColorFlowPattern1();
+
 #else
-    // check if any of the RGB channels is in color flow mode
-
-    if( DUE( colorFlow )) 
-    {
-        for(int ch=0 ; ch < maxRGBChannels ; ch++)
-        {
-            if( rgbColorFlowFunction(ch).value() && parameterChannelEnabled(ch))
-            {
-                DPT_Color_RGB currentRGB, nextRGB;
-                
-                getRGBfromGO(rgbFeedbackFunction(ch), currentRGB);
-                nextColor(currentRGB, nextRGB);
-                putRGBinHW(ch, nextRGB);
-                putRGBinGO(rgbFeedbackFunction( ch ), nextRGB, false );
-
-            }
-        }
-    }
-
+    
+    if( DUE( ColorChange ) )
+        rgbColorFlowPattern0();
+        
 #endif
 
-    static double sum = 0.0;
-    static int count = 0;
-    static double moving_avg = 0.0;
-    static int WINDOW_SIZE = 5;
-
 #ifdef CURRENT_SENSOR_PIN
-    if(DUE(AmpCycle) && false)
-    {
-        double mVolt = 0.0;
-        double Amps = 0.0;
-        // analogSetCycles(100);
-        analogSetPinAttenuation(CURRENT_SENSOR_PIN, ADC_11db);
-        adcAttachPin(CURRENT_SENSOR_PIN);
-        int readValue = analogRead(CURRENT_SENSOR_PIN); // 0 - 4095
-        mVolt = (readValue / 4096.0) * 3300.0;
-        mVolt = mVolt - 1300.0;
-        Amps = mVolt / 65 ; // 65 = 1300 / 20
-        
-        if(count >= WINDOW_SIZE)
-        {
-            sum = moving_avg * (WINDOW_SIZE-1) + Amps;
-            moving_avg = sum /  WINDOW_SIZE;
-        } else {
-            sum += Amps;
-            count++;
 
-            moving_avg = sum / count;
-        }
-        Printf("Sensor value: %d | %6.1f mV | %4.1f A | Moving Avg: %4.1f A\r", readValue, mVolt, Amps, moving_avg);
+    if(DUE(AmpCycle) )
+        updateAmps();
 
-    }
 #endif
 
     
 }
 
+/**
+ * @brief override of the _knxapp::status() method
+ * 
+ */
 void knxapp::status()
 {
     _knxapp::status();

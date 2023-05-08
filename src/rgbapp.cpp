@@ -19,9 +19,23 @@ const RGBChannel RGB2PWMchannel[maxRGBChannels] = {
 
 // helper functions for KNX RGB Data Type
 
+/**
+ * @brief Set the All Enabled Channels To R G B object
+ * 
+ * @param rgb 
+ */
+void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb)
+{
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
+    {
+        if(parameterChannelEnabled(ch))
+            putRGBinHW( ch , rgb );
+    }
+}
+
 
 /**
- * @brief Get RGB channel from group object
+ * @brief Get RGB color from group object
  * 
  * @param go
  * @param rgb
@@ -40,10 +54,11 @@ void getRGBfromGO(GroupObject& go, DPT_Color_RGB& rgb)
 }
 
 /**
- * @brief Store RGB value in group object
+ * @brief Store RGB color in group object
  * 
  * @param go 
  * @param rgb 
+ * @param publish
  */
 void putRGBinGO(GroupObject& go, DPT_Color_RGB rgb, bool publish)
 {
@@ -71,7 +86,7 @@ void putRGBinGO(GroupObject& go, DPT_Color_RGB rgb, bool publish)
 }
 
 /**
- * @brief Get RGB from params
+ * @brief Get RGB color from params
  * 
  * @param rgbCh
  * @param rgb
@@ -84,10 +99,10 @@ void getRGBfromParams(int rgbCh, DPT_Color_RGB& rgb)
 }
 
 /**
- * @brief function to determine the next color in the color wheel
+ * @brief determine the next color in the color wheel
  * 
- * @param colorRGB 
- * @return DPT_Color_RGB 
+ * @param colorRGB start color (input)
+ * @param nextRGB next color (output) 
  */
 void nextColor(DPT_Color_RGB colorRGB, DPT_Color_RGB &nextRGB)
 {
@@ -127,7 +142,7 @@ void nextColor(DPT_Color_RGB colorRGB, DPT_Color_RGB &nextRGB)
 };
 
 /**
- * @brief Set the 3 PWM channels in RGB channel to RGB value
+ * @brief Set the 3 PWM channels in RGB channel to RGB value to represent the color
  * 
  * @param rgbCh - RGB channel (0..4)
  * @param rgbValue
@@ -163,6 +178,61 @@ void getRGBfromHW(int rgbCh, DPT_Color_RGB& rgbValue)
     rgbValue.R = red    > 255 ? 255 : red;
     rgbValue.G = green  > 255 ? 255 : green;
     rgbValue.B = blue   > 255 ? 255 : blue;
+}
+
+/**
+ * @brief ColorFlow pattern #1
+ * 
+ * For enabled channels in ColorFlow mode, 
+ * the color is changed to the next color in the color wheel
+ *  
+ */
+void rgbColorFlowPattern1()
+{
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
+    {
+        if( rgbColorFlowFunction(ch).value() && parameterChannelEnabled(ch))
+        {
+            DPT_Color_RGB currentRGB, nextRGB;
+            
+            getRGBfromGO(rgbFeedbackFunction(ch), currentRGB);
+            nextColor(currentRGB, nextRGB);
+            putRGBinHW(ch, nextRGB);
+            putRGBinGO(rgbFeedbackFunction( ch ), nextRGB, false );
+
+        }
+    }
+}
+
+/**
+ * @brief ColorFlow pattern (off, R, G, B, white) over all enabled channels -- for testing purposes
+ * 
+ */
+void rgbColorFlowPattern0()
+{
+    static int loopColor = 0;
+    DPT_Color_RGB color;
+
+    loopColor = (loopColor + 1) % 5;
+    switch(loopColor) {
+        case 0:
+            color = { 0, 0, 0};
+            break;
+        case 1:
+            color = { 255, 0, 0};
+            break;
+        case 2:
+            color = { 0, 255, 0};
+            break;
+        case 3:
+            color = { 0, 0, 255};
+            break;
+        case 4:
+            color = { 255, 255, 255};
+            break;
+    }
+    setAllEnabledChannelsToRGB(color);
+
 }
 
 // KNX callback functions
@@ -252,6 +322,11 @@ void callbackRGB(GroupObject& go)
     
 }
 
+/**
+ * @brief start color flow for RGB channel
+ * 
+ * @param rgbCh 
+ */
 void startColorFlow(int rgbCh)
 {
     if(colorFlowRunning[rgbCh]) return;
@@ -262,6 +337,11 @@ void startColorFlow(int rgbCh)
     onOffFeedbackFunction( rgbCh ).value(true);
 }
 
+/**
+ * @brief stop color flow for RGB channel
+ * 
+ * @param rgbCh 
+ */
 void stopColorFlow(int rgbCh)
 {
     if(!colorFlowRunning[rgbCh]) return;
@@ -310,6 +390,10 @@ void callbackRGBRun(GroupObject& go)
     }
 }
 
+/**
+ * @brief display status of RGB channels
+ * 
+ */
 void rgbStatus()
 {
     for(int ch=0 ; ch < maxRGBChannels ; ch++)
@@ -319,21 +403,22 @@ void rgbStatus()
         GroupObject& go = rgbFeedbackFunction(ch);
         bool on = onOffFeedbackFunction(ch).value();
 
-        Printf("\n[%s] Channel %d is %s Flow is %s\n",  parameterChannelEnabled(ch) ? "Enabled" : "DISABLED", ch, on ? "ON " : "Off", colorFlowRunning[ch] ? "ON " : "Off");
+        Printf("\n[%s] Channel %d is %s. ColorFlow is %s\n",  parameterChannelEnabled(ch) ? "Enabled" : "DISABLED", 
+                                                                ch,
+                                                                on ? "ON " : "Off", 
+                                                                colorFlowRunning[ch] ? "ON " : "Off");
         Printf("Start from default color %s\n", parameterChannelStartWithDefaultColor(ch) ? "true" : "false");
         
-        if(parameterChannelStartWithDefaultColor(ch))
-        {
-            getRGBfromParams(ch, rgb);
-            Printf("Inital color %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
-        } else {
-            getRGBfromLast(ch, rgb);
-            Printf("LastColor    %02x %02x %02x\n",  rgb.R, rgb.G, rgb.B);
-        }
+        getRGBfromParams(ch, rgb);
+        Printf("Default Color %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
+        
+        getRGBfromLast(ch, rgb);
+        Printf("Last Color    %02x %02x %02x\n",  rgb.R, rgb.G, rgb.B);
+        
         getRGBfromGO(go, rgb);
-        Printf("GO FB color  %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
+        Printf("GO FB Color   %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
         getRGBfromHW(ch, rgb);
-        Printf("HW color     %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
+        Printf("HW Color      %02x %02x %02x\n", rgb.R, rgb.G, rgb.B);
     }
 
     if(spiffMountedInSetup)
