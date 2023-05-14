@@ -74,4 +74,6 @@ void putRGBinHW(int rgbCh, DPT_Color_RGB rgbValue);
 void callbackOnOff(GroupObject& go);
 void callbackRGB(GroupObject& go);
 
+#include "lastcolor.h"
+#include "rgbapp.h"
 #endif

@@ -33,6 +33,23 @@ void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb)
     }
 }
 
+/**
+ * @brief Get the RGB value from lastColor array and put back in hardware
+ * 
+ */
+void resetAllEnabledChannels()
+{
+    for(int ch=0 ; ch < maxRGBChannels ; ch++)
+    {
+        if(parameterChannelEnabled(ch))
+        {
+            DPT_Color_RGB rgb;
+            
+            getRGBfromLast(ch, rgb);
+            putRGBinHW( ch , rgb );
+        }
+    }
+}
 
 /**
  * @brief Get RGB color from group object

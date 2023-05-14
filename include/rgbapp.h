@@ -1,6 +1,11 @@
+#ifndef RGBAPP_H
+#define RGBAPP_H
+
 #include <knxapp.h>
 
 void setAllEnabledChannelsToRGB(DPT_Color_RGB rgb);
+void resetAllEnabledChannels();
+
 
 void getRGBfromGO(GroupObject& go, DPT_Color_RGB& rgb);
 
@@ -23,3 +28,6 @@ void rgbColorFlowPattern0();
 void rgbColorFlowPattern1();
 
 void rgbStatus();
+
+#include "lastcolor.h"
+#endif

@@ -1,8 +1,7 @@
 #include <knxp_platformio.h>
 #include "rgbapp.h"
 #include "amps.h"
-#include "FS.h"
-#include "SPIFFS.h"
+
 
 DECLARE_TIMERms(colorFlow, 20);
 
@@ -48,7 +47,7 @@ const uint8_t ledPins[16] = {   33, 25, 26,
 const uint8_t ledPins[16] = { 17, 16, 15, 27, 14, 12, 13, 23, 22, 21, 19, 18, 0, 0, 0, 0 };  
 #endif
 
-
+static bool progLedsAreOn = false;
 /**
  * @brief callback for programming mode LED feedback (ON)
  * 
@@ -58,6 +57,7 @@ void knxProgledOn()
     DPT_Color_RGB progModeColor = { 0, 0, 128 }; 
 
     setAllEnabledChannelsToRGB(progModeColor);
+    progLedsAreOn = true;
 }
 
 /**
@@ -66,9 +66,10 @@ void knxProgledOn()
  */
 void knxProgledOff() 
 {
-    DPT_Color_RGB noProg = { 0, 64, 0 }; 
-
-    setAllEnabledChannelsToRGB(noProg);
+    if(progLedsAreOn){
+        resetAllEnabledChannels();
+        progLedsAreOn = false;
+    }
 }
 
 /**
@@ -111,6 +112,8 @@ void knxapp::setup()
         }
     }
 
+    initLastColors();
+
 #ifdef TELNET_CONNECT_DELAY
     delay(TELNET_CONNECT_DELAY); // allow for telnet to connect;
 #endif
@@ -119,8 +122,6 @@ void knxapp::setup()
 
     for(int ch=0 ; ch < maxRGBChannels ; ch++)
     {
-        delay(5);
-
         // setup DPT for all functions, no callback if channel is not enabled
 
         Log.verbose("Setup RGB channel %d\n", ch);
@@ -160,15 +161,6 @@ void knxapp::setup()
     
     setCyclicTimer(60*knx.paramByte(0));
     setGroupObjectCount( maxFunctions * maxRGBChannels );
-
-    spiffMountedInSetup = SPIFFS.begin();
-
-    if(spiffMountedInSetup)
-    {
-        Log.notice("SPIFFS mounted in setup\n");
-    } else {
-        Log.error("SPIFFS mount in setup failed\n");
-    }
 
     knx.setProgLedOffCallback(knxProgledOff);
     knx.setProgLedOnCallback(knxProgledOn);
